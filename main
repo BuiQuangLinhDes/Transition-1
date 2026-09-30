@@ -1,97 +1,237 @@
-<div id="w">
-  <img src="https://i.postimg.cc/pXtvPX1S/sketch-final.png" id="a">
-  <img src="https://i.postimg.cc/1XGL8wYB/Final-colro.png" id="b">
-  <div id="r"></div>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Image Water Ripple</title>
 
 <style>
-#w{
-  position:relative;
-  width:100%;
-  overflow:hidden;
-  cursor:none;
+* {
+    box-sizing: border-box;
 }
 
-#a{
-  display:block;
-  width:100%;
-  height:auto;
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    background: #000;
 }
 
-#b{
-  position:absolute;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  clip-path:circle(0px at 50% 50%);
-  pointer-events:none;
+body {
+    overflow-x: hidden;
 }
 
-#r{
-  position:absolute;
-  width:120px;
-  height:120px;
-  border:1px solid rgba(255,255,255,.7);
-  border-radius:50%;
-  pointer-events:none;
-  transform:translate(-50%,-50%);
-  opacity:0;
-  box-shadow:0 0 25px rgba(255,255,255,.35);
+/* =========================
+   MAIN IMAGE CONTAINER
+========================= */
+
+#water {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    cursor: none;
+    line-height: 0;
 }
 
-#r:before,
-#r:after{
-  content:"";
-  position:absolute;
-  inset:-20px;
-  border:1px solid rgba(255,255,255,.35);
-  border-radius:50%;
-  animation:ripple 1.8s infinite;
+/* IMAGE 1 - BACKGROUND */
+
+#image1 {
+    display: block;
+    width: 100%;
+    height: auto;
 }
 
-#r:after{
-  inset:-40px;
-  animation-delay:.5s;
+/* IMAGE 2 - OVERLAY */
+
+#image2 {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    pointer-events: none;
+
+    clip-path: circle(
+        0px at 50% 50%
+    );
 }
 
-@keyframes ripple{
-  0%{
-    transform:scale(.6);
-    opacity:.8;
-  }
-  100%{
-    transform:scale(1.3);
-    opacity:0;
-  }
+/* =========================
+   WATER RIPPLE
+========================= */
+
+#ripple {
+    position: absolute;
+
+    width: 120px;
+    height: 120px;
+
+    left: 0;
+    top: 0;
+
+    border: 1px solid rgba(255,255,255,0.75);
+
+    border-radius: 50%;
+
+    pointer-events: none;
+
+    transform: translate(-50%, -50%);
+
+    opacity: 0;
+
+    box-shadow:
+        0 0 20px rgba(255,255,255,0.25),
+        inset 0 0 20px rgba(255,255,255,0.15);
+
+    transition:
+        opacity 0.25s ease;
+}
+
+/* Ripple ring 1 */
+
+#ripple::before {
+    content: "";
+
+    position: absolute;
+
+    left: -20px;
+    top: -20px;
+
+    width: 160px;
+    height: 160px;
+
+    border: 1px solid rgba(255,255,255,0.35);
+
+    border-radius: 50%;
+
+    animation: ripple 1.8s infinite;
+}
+
+/* Ripple ring 2 */
+
+#ripple::after {
+    content: "";
+
+    position: absolute;
+
+    left: -40px;
+    top: -40px;
+
+    width: 200px;
+    height: 200px;
+
+    border: 1px solid rgba(255,255,255,0.2);
+
+    border-radius: 50%;
+
+    animation: ripple 1.8s infinite;
+
+    animation-delay: 0.45s;
+}
+
+/* Ripple animation */
+
+@keyframes ripple {
+
+    0% {
+        transform: scale(0.55);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: scale(1.25);
+        opacity: 0;
+    }
 }
 </style>
 
+</head>
+
+<body>
+
+<div id="water">
+
+    <!-- IMAGE 1 -->
+    <img
+        id="image1"
+        src="https://i.postimg.cc/pXtvPX1S/sketch-final.png"
+        alt=""
+    >
+
+    <!-- IMAGE 2 -->
+    <img
+        id="image2"
+        src="https://i.postimg.cc/1XGL8wYB/Final-colro.png"
+        alt=""
+    >
+
+    <!-- WATER RIPPLE -->
+    <div id="ripple"></div>
+
+</div>
+
+
 <script>
-const w=document.getElementById("w");
-const b=document.getElementById("b");
-const r=document.getElementById("r");
 
-w.addEventListener("mousemove",function(e){
+const container = document.getElementById("water");
+const image2 = document.getElementById("image2");
+const ripple = document.getElementById("ripple");
 
-  const rect=w.getBoundingClientRect();
+const radius = 130;
 
-  const x=e.clientX-rect.left;
-  const y=e.clientY-rect.top;
 
-  b.style.clipPath=
-    `circle(125px at ${x}px ${y}px)`;
+/* =========================
+   MOUSE MOVE
+========================= */
 
-  r.style.left=x+"px";
-  r.style.top=y+"px";
-  r.style.opacity=1;
+container.addEventListener("mousemove", function(event) {
+
+    const rect = container.getBoundingClientRect();
+
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    /*
+       Reveal IMAGE 2
+       around mouse
+    */
+
+    image2.style.clipPath =
+        `circle(${radius}px at ${x}px ${y}px)`;
+
+
+    /*
+       Move ripple
+    */
+
+    ripple.style.left = x + "px";
+    ripple.style.top = y + "px";
+
+    ripple.style.opacity = "1";
+
 });
 
-w.addEventListener("mouseleave",function(){
 
-  b.style.clipPath="circle(0px at 50% 50%)";
-  r.style.opacity=0;
+/* =========================
+   MOUSE LEAVE
+========================= */
+
+container.addEventListener("mouseleave", function() {
+
+    image2.style.clipPath =
+        "circle(0px at 50% 50%)";
+
+    ripple.style.opacity = "0";
 
 });
+
 </script>
+
+</body>
+</html>
