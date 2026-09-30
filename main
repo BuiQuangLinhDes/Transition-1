@@ -1,0 +1,97 @@
+<div id="w">
+  <img src="https://i.postimg.cc/pXtvPX1S/sketch-final.png" id="a">
+  <img src="https://i.postimg.cc/1XGL8wYB/Final-colro.png" id="b">
+  <div id="r"></div>
+</div>
+
+<style>
+#w{
+  position:relative;
+  width:100%;
+  overflow:hidden;
+  cursor:none;
+}
+
+#a{
+  display:block;
+  width:100%;
+  height:auto;
+}
+
+#b{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  clip-path:circle(0px at 50% 50%);
+  pointer-events:none;
+}
+
+#r{
+  position:absolute;
+  width:120px;
+  height:120px;
+  border:1px solid rgba(255,255,255,.7);
+  border-radius:50%;
+  pointer-events:none;
+  transform:translate(-50%,-50%);
+  opacity:0;
+  box-shadow:0 0 25px rgba(255,255,255,.35);
+}
+
+#r:before,
+#r:after{
+  content:"";
+  position:absolute;
+  inset:-20px;
+  border:1px solid rgba(255,255,255,.35);
+  border-radius:50%;
+  animation:ripple 1.8s infinite;
+}
+
+#r:after{
+  inset:-40px;
+  animation-delay:.5s;
+}
+
+@keyframes ripple{
+  0%{
+    transform:scale(.6);
+    opacity:.8;
+  }
+  100%{
+    transform:scale(1.3);
+    opacity:0;
+  }
+}
+</style>
+
+<script>
+const w=document.getElementById("w");
+const b=document.getElementById("b");
+const r=document.getElementById("r");
+
+w.addEventListener("mousemove",function(e){
+
+  const rect=w.getBoundingClientRect();
+
+  const x=e.clientX-rect.left;
+  const y=e.clientY-rect.top;
+
+  b.style.clipPath=
+    `circle(125px at ${x}px ${y}px)`;
+
+  r.style.left=x+"px";
+  r.style.top=y+"px";
+  r.style.opacity=1;
+});
+
+w.addEventListener("mouseleave",function(){
+
+  b.style.clipPath="circle(0px at 50% 50%)";
+  r.style.opacity=0;
+
+});
+</script>
